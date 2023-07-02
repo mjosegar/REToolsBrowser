@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %} Browser {% endblock %}
+
+{% block content %}
+
+<article class="container py-5">
+
+    <h4 class="text-center">Ranking of CARE Tools</h4>
+    <a href="/order" class="btn btn-dark mb-3">Back</a>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Rank</th>
+                    <th class="text-center">Tool</th>
+                    <th class="text-center">Vendor</th>
+                    <th class="text-center">Puntuation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tool in tools %}
+                <tr id="fila-{{ category.id }}">
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td class="text-center">{{ tool.name }}</td>
+                    <td class="text-center">{{ tool.vendor }}</td>
+                    <td class="text-center">{{ tool.value }}%</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No tools founded</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+        data-survey="{{survey}}" data-hide="{{hide}}" tabindex="-1" aria-labelledby="staticBackdropLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Help us by filling out the following form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <small>The information is confidential and it is intended solely to provide a better user
+                        experience.</small>
+                    <form method="POST" class="pt-3">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Nickname:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="nickname" required>
+                        </div>
+                        {% for element in data %}
+                        <div class="mb-3">
+                            <span class="col-form-label">{{element.question.text}}</span>
+                            {% for answer in element.answers %}
+                            <div class="form-check" id="message-text-{{element.question.text}}">
+                                <input class="form-check-input" type="radio" name="{{element.question.id}}"
+                                    value="{{answer.id}}" id="radio{{answer.id}}" required>
+                                <label class="form-check-label" for="radio{{answer.id}}">
+                                    {{answer}}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-dark" data-bs-dismiss="modal"
+                                id="boton">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</article>
+
+<!-- Para mostrar o no la encuesta -->
+<script>
+    modal_survey = document.getElementById("staticBackdrop")
+    show = modal_survey.dataset.survey
+    hide = modal_survey.dataset.hide
+    if (show == 1 && hide == 0) {
+        var modal = new bootstrap.Modal(modal_survey);
+        setTimeout(function () {
+            modal.show();
+        }, 1000)
+
+        modal._element.addEventListener("hide.bs.modal", function (event) {
+            event.preventDefault();
+        });
+    }
+</script>
+
+{% endblock %}

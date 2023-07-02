@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Categories {% endblock %}
+
+{% block content %}
+<article class="container py-5">
+
+  <h4 class="text-center">Categories<i class="fas fa-wrench"></i></h4>
+  <hr>
+
+  <div class="d-flex justify-content-end">
+    <a href="/categories/new"><button type="button" class="btn btn-dark mb-3">Add new</button></a>
+  </div>
+
+  {% if categories %}
+
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path
+        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+    </symbol>
+  </svg>
+
+  <div class="table-responsive">
+    <table class="table table-striped" id="table-search">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td class="align-middle">
+            <strong>{{ category.topic }}</strong>
+          </td>
+          <td class="align-middle">
+            {{ category.description }}
+          </td>
+          <td class="align-middle">
+            <a href="/categories/{{ category.id }}"><button type="button"
+                class="btn btn-dark btn-sm m-1">Modify</button></a>
+            <button type="button" class="btn btn-modal btn-sm border-primary m-1" data-bs-toggle="modal"
+              data-bs-target="#modal" id="delete-{{category.id}}">
+              Delete
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Modal para eliminar la categoria -->
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">Warning</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this category? This process cannot be reversed.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-dark" id="btn-modal-delete">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast en caso de registrar/borrar una categoria -->
+    <div class="toast-container position-fixed top-0 end-0 p-5" style="z-index: 11">
+      <div id="myToast" class="toast hide text-light" role="alert" aria-live="assertive" aria-atomic="true"
+        data-flag="{{flag}}">
+        <div class=" toast-header bg-dark">
+          <strong class="me-auto text-light">Changes applied</strong>
+          <small>Just now</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body toast-body-color">
+          {{ message }}
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {% else %}
+  <div class="alert alert-dark" role="alert">
+    <h4 class="alert-heading">No categories.</h4>
+    <p>No categories were founded in the system by now.</p>
+  </div>
+  {% endif %}
+
+  <!-- Para saber que boton corresponde a cada categoria a la hora de borrar -->
+  <script>
+    const buttons = document.querySelectorAll('.btn-modal')
+    const modal_button = document.getElementById('btn-modal-delete')
+
+    var id_button_clicked
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        id_button_clicked = button.id.split('-')[1]
+      })
+    })
+
+    modal_button.addEventListener('click', () => window.location.href = window.location.origin + '/categories/' + id_button_clicked + '/delete')
+  </script>
+
+  <!-- Inicializacion del Toast -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var element = document.getElementById("myToast");
+
+      flag = element.dataset.flag
+      if (flag == 1) {
+        var myToast = new bootstrap.Toast(element)
+        myToast.show()
+      }
+    })
+  </script>
+
+
+</article>
+
+
+{% endblock %}

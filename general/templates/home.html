@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Welcome {% endblock %}
+
+{% block content %}
+<div class="container py-3 text-center">
+
+    <h3>Welcome {% if request.user.is_authenticated %} back, {{ user.name }} {% endif %}</h3>
+    <p>Find the perfect tool for your requirements in a few steps.</p>
+
+    <img src="{% static 'kelly-sikkema-ml1IgjV8OvY-unsplash.jpg' %}" class="img-fluid"
+      alt="Imagen of a men making the interface of a delivery application" id="logo"><br>
+    <a href="/search"><button type="button" class="btn-dark m-4 p-1 rounded">Let's get started</button></a>
+
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Browser {% endblock %}
+
+{% block content %}
+
+<article class="container py-5">
+
+  <h4 class="text-center">Please, select the categories you are interested in</h4><hr>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="d-flex justify-content-end">
+      <button type="submit" class="btn btn-dark mb-3" id="submit-button" disabled>Next</button>
+    </div>
+
+    <table class="table table-striped" id="table-search">
+      <thead>
+        <tr>
+          <th>Topic</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td id="row-{{ forloop.counter }}" class="row-search"> 
+              <input type="checkbox" id="checkbox-{{ forloop.counter }}" name="{{ category.id }}" value="{{ category.id }}" class="form-check-search d-none">
+              {{ category.topic }}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">No hay objetos disponibles</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </form>
+
+  <!-- Modal para el maximo de categorias -->
+  <div class="modal fade" id="selectCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Warning</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          You can not select more categories (maximum 12).
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/script-search.js' %}"></script>
+
+</article>
+
+{% endblock %}
